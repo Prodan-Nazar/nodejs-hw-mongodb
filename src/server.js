@@ -1,44 +1,62 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
-import { env } from './utils/env.js';
-import { ENV_VARS, UPLOAD_DIR } from './constants/index.js';
-import { errorHandlerMiddleware } from './middlewares/errorHandlerMiddleware.js';
-import { notFoundMiddleware } from './middlewares/notFoundMiddleware.js';
-import rootRouter from './routers/index.js';
-import cookiesParser from 'cookie-parser';
 
-export const startServer = () => {
+import { env } from './utils/env.js';
+import { getAllContacts, getContactById } from './services/contacts.js';
+
+const PORT = Number(env('PORT', '3000'));
+
+export const setupServer = () => {
   const app = express();
 
-  // app.use(
-  //   pino({
-  //     transport: {
-  //       target: 'pino-pretty',
-  //     },
-  //   }),
-  // );
-
+  app.use(express.json());
   app.use(cors());
-  app.use(cookiesParser());
 
   app.use(
-    express.json({
-      limit: '1mb',
-      type: ['application/json', 'application/vnd.api+json'],
+    pino({
+      transport: {
+        target: 'pino-pretty',
+      },
     }),
   );
 
-  app.use('/uploads', express.static(UPLOAD_DIR));
+  app.get('/contacts', async (req, res) => {
+    const contacts = await getAllContacts();
 
-  app.use(rootRouter);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully found contacts!',
+      data: contacts,
+    });
+  });
 
-  app.use(notFoundMiddleware);
+  app.get('/contacts/:contactId', async (req, res) => {
+    const { contactId } = req.params;
 
-  app.use(errorHandlerMiddleware);
+    const contact = await getContactById(contactId);
 
-  const PORT = env(ENV_VARS.PORT, 3000);
+    res.status(200).json({
+      status: 200,
+      message: `Successfully found contact with id ${contactId}!`,
+      data: contact,
+    });
+  });
+
+  app.use('*', (req, res, next) => {
+    res.status(404).json({
+      message: 'Not found',
+    });
+  });
+
+  app.use((err, req, res, next) => {
+    res.status(500).json({
+      message: 'Something went wrong',
+      error: err.message,
+    });
+  });
+
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}!`);
+    console.log(`Server is running on port ${PORT}`);
   });
 };
