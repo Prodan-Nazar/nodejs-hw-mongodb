@@ -1,40 +1,34 @@
+// src/server.js
 import express from 'express';
-import pino from 'pino-http';
 import cors from 'cors';
+import pino from 'pino-http';
+
 import { env } from './utils/env.js';
-import { ENV_VARS } from './constants/index.js';
-import { errorHandlerMiddleware } from './middlewares/errorHandlerMiddleware.js';
-import { notFoundMiddleware } from './middlewares/notFoundMiddleware.js';
-import studentsRouter from './routers/students.js';
 
-export const startServer = () => {
-  const app = express();
+import contactsRouter from './routers/contacts.js';
+import notFoundHandler from './middlewares/notFoundHandler.js';
+import errorHandler from './middlewares/errorHandler.js';
 
-  app.use(
-    pino({
-      transport: {
-        target: 'pino-pretty',
-      },
-    }),
-  );
+const PORT = Number(env('PORT', '3000'));
 
-  app.use(cors());
+export const setupServer = () => {
+    const app = express();
+    app.use(express.json());
+    app.use(cors());
 
-  app.use(
-    express.json({
-      limit: '1mb',
-      type: ['application/json', 'application/vnd.api+json'],
-    }),
-  );
+    const logger = pino({
+        transport: {
+            target: 'pino-pretty',
+        },
+    });
+    app.use(logger);
 
-  app.use(studentsRouter);
+    app.use('/contacts', contactsRouter);
 
-  app.use(notFoundMiddleware);
+    app.use(notFoundHandler);
+    app.use(errorHandler);
 
-  app.use(errorHandlerMiddleware);
-
-  const PORT = env(ENV_VARS.PORT, 3000);
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}!`);
-  });
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
 };
