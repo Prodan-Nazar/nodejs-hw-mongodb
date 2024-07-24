@@ -1,13 +1,13 @@
-import { sortOrderList } from "../constants/contacts-constants.js";
+export const sortOrderList = ["asc", "desc"]
 
-const parseSortParams = ({ sortOrder, sortBy }, contactFieldList) => {
+const parseSortParams = ({ sortOrder, sortBy }, fieldList) => {
     const parsedSortOrder = sortOrderList.includes(sortOrder) ? sortOrder : sortOrderList[0];
-    const parsedSortBy = contactFieldList.includes(sortBy) ? sortBy : '_id';
+    const parsedSortBy = fieldList.includes(sortBy) ? sortBy : fieldList[0];
 
     return {
         sortBy: parsedSortBy,
         sortOrder: parsedSortOrder,
-    };
-};
+    }
+}
 
 export default parseSortParams;
