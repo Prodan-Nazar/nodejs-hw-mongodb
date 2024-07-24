@@ -1,9 +1,7 @@
 import nodemailer from 'nodemailer';
-import 'dotenv/config';
 
 import { SMTP } from '../constants/index.js';
 import { env } from '../utils/env.js';
-import createHttpError from 'http-errors';
 
 const transporter = nodemailer.createTransport({
   host: env(SMTP.SMTP_HOST),
@@ -15,10 +13,6 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async (options) => {
-  try {
-    const send = await transporter.sendMail(options);
-    return send;
-  } catch (error) {
-    throw createHttpError(500, 'Failed to send email', error);
-  }
+  
+  return await transporter.sendMail(options);
 };
