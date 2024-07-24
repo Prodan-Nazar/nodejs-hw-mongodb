@@ -1,74 +1,94 @@
-import { SORT_ORDER } from '../constants/index.js';
-import { ContactsCollection } from '../db/models/contacts.js';
-
-import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import Contact from '../db/Contact.js';
+import calcPaginationData from '../utils/calcPaginationData.js';
+import sortOrderList from '../constants/indexSort.js';
+import { constantsFieldList } from '../constants/contact-constants.js';
 
 export const getAllContacts = async ({
+  filter,
   page,
   perPage,
-  sortOrder = SORT_ORDER.ASC,
-  sortBy = '_id',
-  filter = {},
-  userId,
+  sortBy = constantsFieldList[0],
+  sortOrder = sortOrderList[0],
 }) => {
   const limit = perPage;
-  const skip = (page - 1) * perPage;
+  const skip = (page - 1) * limit;
 
-  const contactsQuery = ContactsCollection.find({ userId });
+  const contactsQuery = Contact.find();
 
-  if (filter.isFavorite) {
-    contactsQuery.where('isFavorite').equals(filter.isFavorite);
+  if (filter.userId) {
+    contactsQuery.where('userId').equals(filter.userId);
+  }
+  if (filter.type) {
+    contactsQuery.where('contactType').equals(filter.type);
   }
 
-  if (filter.contactType) {
-    contactsQuery.where('contactType').equals(filter.contactType);
+  if (filter.isFavourite !== null && filter.isFavourite !== undefined) {
+    contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
 
-  const [contactsCount, contacts] = await Promise.all([
-    ContactsCollection.find().merge(contactsQuery).countDocuments(),
-    contactsQuery
-      .skip(skip)
-      .limit(limit)
-      .sort({ [sortBy]: sortOrder })
-      .exec(),
-  ]);
+  const totalContacts = await Contact.find()
+    .merge(contactsQuery)
+    .countDocuments()
+    .exec();
 
-  const paginationData = calculatePaginationData(contactsCount, perPage, page);
+  const data = await contactsQuery
+    .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+    .exec();
+
+  const { totalPages, hasNextPage, hasPreviousPage } = calcPaginationData({
+    total: totalContacts,
+    perPage,
+    page,
+  });
 
   return {
-    data: contacts,
-    ...paginationData,
+    data,
+    page,
+    perPage,
+    totalContacts,
+    totalPages,
+    hasPreviousPage,
+    hasNextPage,
   };
 };
 
-export const getContactById = async (contactId, userId) => {
-  return await ContactsCollection.findOne({ _id: contactId, userId });
-};
+// export const getContactById = ({ _id, userId }) =>
+//   Contact.findOne({ _id, userId });
 
 export const createContact = async (payload) => {
-  return await ContactsCollection.create(payload);
+  const contact = await Contact.create(payload);
+  return contact;
+};
+export const getContactById = async (filter) => {
+  console.log(filter);
+  const contact = await Contact.findOne(filter);
+  return contact;
 };
 
-export const patchContact = async (contactId, payload = {}, userId) => {
-  const updateOptions = { new: true, includeResultMetadata: true };
+export const updateContact = async (contactId, payload, options = {}) => {
+  const result = await Contact.findOneAndUpdate({ _id: contactId }, payload, {
+    // new: true,
+    includeResultMetadata: true,
+    ...options,
+  });
+  if (!result || !result.value) return null;
 
-  const rawResult = await ContactsCollection.findOneAndUpdate(
-    { _id: contactId, userId },
-    payload,
-    updateOptions,
-  );
-
-  if (!rawResult || !rawResult.value) return null;
-
+  const isNew = Boolean(result?.lastErrorObject?.upserted);
   return {
-    contact: rawResult.value,
-    isNew: Boolean(rawResult?.lastErrorObject?.upsert),
+    data: result.value,
+    isNew,
   };
 };
 
-export const deleteContact = async (contactId, userId) => {
-  return await ContactsCollection.findOneAndDelete({
+export const deleteContact = async ({ _id: contactId, userId }) => {
+  const contact = await Contact.findOneAndDelete({
     _id: contactId,
     userId,
   });
+  return contact;
 };
+
+// export const deleteContact = (filter) => Contact.findOneAndDelete(filter);
+// export const getContactById = (filter) => Contact.findOne(filter);
