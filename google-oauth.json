@@ -1,5 +1,6 @@
 {
   "web": {
+    "client_id": "639156625199-1f2ku4s1fec5shvh6@akp7sb4fitlrt7.apps.googleusercontent.com",
     "project_id": "contacts-app-428619",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://oauth2.googleapis.com/token",
