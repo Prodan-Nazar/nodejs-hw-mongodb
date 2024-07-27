@@ -6,28 +6,41 @@ info:
     name: Apache 2.0
     url: <http://www.apache.org/licenses/LICENSE-2.0.html>
   description: >
-    This is a documentation of contacts app
+    This is a documentation of user's contacts app.
 tags:
   - name: Contacts
-    description: Operations about users.
+    description: operations related to contacts
   - name: Auth
-    description: Auth operations.
+    description: operations related to authentication
+
 servers:
   - url: http://localhost:3000
-  - url: https://nodejs-hw-mongodb-s9lz.onrender.com
+  - url: https://nodejs-hw-mongodb-p129.onrender.com
 paths:
   /contacts:
-    post:
-      $ref: ../swagger/paths/contacts/post.yaml
     get:
       $ref: ../swagger/paths/contacts/get.yaml
-  /contacts/{id}:
+    post:
+      $ref: ../swagger/paths/contacts/post.yaml
+  /contacts/{contactId}:
     get:
-      $ref: ../swagger/paths/contacts/id/get.yaml
+      $ref: ../swagger/paths/contacts/{contactId}/get.yaml
     patch:
-      $ref: ../swagger/paths/contacts/id/patch.yaml
+      $ref: ../swagger/paths/contacts/{contactId}/patch.yaml
     delete:
-      $ref: ../swagger/paths/contacts/id/delete.yaml
+      $ref: ../swagger/paths/contacts/{contactId}/delete.yaml
+  /auth/register:
+    $ref: ..\swagger\paths\auth\register.yaml
+  /auth/login:
+    $ref: ..\swagger\paths\auth\login.yaml
+  /auth/refresh:
+    $ref: ..\swagger\paths\auth\refresh.yaml
+  /auth/logout:
+    $ref: ..\swagger\paths\auth\logout.yaml
+  /auth/send-reset-email:
+    $ref: ..\swagger\paths\auth\sendResetEmail.yaml
+  /auth/reset-pwd:
+    $ref: ..\swagger\paths\auth\resetPwd.yaml
 components:
   securitySchemes:
     bearerAuth:

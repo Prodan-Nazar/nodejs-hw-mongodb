@@ -1,48 +1,42 @@
-import createHttpError from 'http-errors';
-import { findSession } from '../services/auth.js';
-import { findUser } from '../services/auth.js';
+import createHttpError from "http-errors";
 
-const authentificate = async (req, res, next) => {
-  const authHeader = req.get('Authorization');
-  if (!authHeader) {
-    next(createHttpError(401, 'Please provide Authorization header'));
-    return;
-  }
+import { findSession } from "../services/session.js";
+import { findUser } from "../services/auth.js";
 
-  const bearer = authHeader.split(' ')[0];
-  const token = authHeader.split(' ')[1];
+const authenticate = async (req, res, next) => {
+    const authHeader = req.get("Authorization");
+    if (!authHeader) {
+        return next(createHttpError(401, "Authorization header missing"));
+    }
 
-  if (bearer !== 'Bearer') {
-    next(createHttpError(401, 'Auth header should be of type Bearer'));
-    return;
-  }
-  if (!token) {
-    next(createHttpError(401, 'Token missing'));
-    return;
-  }
+    const [bearer, accessToken] = authHeader.split(" ");
 
-  const session = await findSession({ accessToken: token });
+    if (bearer !== "Bearer") {
+        return next(createHttpError(401, "Token must have Bearer type"));
+    }
 
-  if (!session) {
-    next(createHttpError(401, 'Session is not found'));
-  }
-  const accessTokenExparied =
-    new Date() > new Date(session.accessTokenValidUntil);
+    if (!accessToken) {
+        return next(createHttpError(401, "Token missing"));
+    }
 
-  if (accessTokenExparied) {
-    next(createHttpError(401, 'Access token expired'));
-  }
+    const session = await findSession({ accessToken });
 
-  const user = await findUser({ _id: session.userId });
-  if (!user) {
-    next(createHttpError(401, 'User not found'));
-    return;
-  }
+    if (!session) {
+        return next(createHttpError(401, "Session not found"));
+    }
 
-  req.user = user;
-  req.session = session;
+    const accessTokenExpired = new Date() > new Date(session.accessTokenValidUntil);
+    if (accessTokenExpired) {
+        return next(createHttpError(401, "Access token expired"));
+    }
 
-  next();
-};
+    const user = await findUser({ _id: session.userId });
+    if (!user) {
+        return next(createHttpError(401, "User not found"));
+    }
 
-export default authentificate;
+    req.user = user;
+    next();
+}
+
+export default authenticate;

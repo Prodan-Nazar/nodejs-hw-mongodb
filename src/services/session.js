@@ -1,22 +1,27 @@
-// import { SessionsCollection } from '../db/Session.js';
-// import { randomBytes } from 'crypto';
-// // import bcrypt from 'bcrypt';
-// // import createHttpError from 'http-errors';
-// import { FIFTEEN_MINUTES, THIRTY_DAYS } from '../constants/indexSort.js';
+import { randomBytes } from "node:crypto";
 
-// export const createSession = async (userId) => {
-//   await SessionsCollection.deleteOne({ userId });
+import Session from "../db/models/Session.js";
 
-//   const accessToken = randomBytes(30).toString('base64');
-//   const refreshToken = randomBytes(30).toString('base64');
-//   const accessTokenValidUntil = new Date(Date.now() + FIFTEEN_MINUTES);
-//   const refreshTokenValidUntil = new Date(Date.now() + THIRTY_DAYS);
+import { ACCESS_TOKEN_LIFETIME, REFRESH_TOKEN_LIFETIME } from "../constants/users-constants.js";
 
-//   return SessionsCollection.create({
-//     userId,
-//     accessToken,
-//     refreshToken,
-//     accessTokenValidUntil,
-//     refreshTokenValidUntil,
-//   });
-// };
+export const findSession = filter => Session.findOne(filter);
+
+export const createSession = async (userId) => {
+    await Session.deleteOne({ userId });
+
+    const accessToken = randomBytes(30).toString("base64");
+    const refreshToken = randomBytes(30).toString("base64");
+
+    const accessTokenValidUntil = new Date(Date.now() + ACCESS_TOKEN_LIFETIME);
+    const refreshTokenValidUntil = new Date(Date.now() + REFRESH_TOKEN_LIFETIME);
+
+    return Session.create({
+        userId,
+        accessToken,
+        refreshToken,
+        accessTokenValidUntil,
+        refreshTokenValidUntil,
+    })
+}
+
+export const deleteSession = filter => Session.deleteOne(filter);

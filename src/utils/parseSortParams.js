@@ -1,18 +1,13 @@
-import sortOrderList from '../constants/indexSort.js';
+export const sortOrderList = ["asc", "desc"]
 
-const parseSortParams = ({ sortBy, sortOrder }, constantsFieldList) => {
-  const parsedSortOrder = sortOrderList.includes(sortOrder)
-    ? sortOrder
-    : sortOrderList[0];
+const parseSortParams = ({ sortOrder, sortBy }, fieldList) => {
+    const parsedSortOrder = sortOrderList.includes(sortOrder) ? sortOrder : sortOrderList[0];
+    const parsedSortBy = fieldList.includes(sortBy) ? sortBy : fieldList[0];
 
-  const parsedSortBy = constantsFieldList.includes(sortBy)
-    ? sortBy
-    : constantsFieldList[0];
-
-  return {
-    sortBy: parsedSortBy,
-    sortOrder: parsedSortOrder,
-  };
-};
+    return {
+        sortBy: parsedSortBy,
+        sortOrder: parsedSortOrder,
+    }
+}
 
 export default parseSortParams;

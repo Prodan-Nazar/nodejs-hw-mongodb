@@ -1,0 +1,42 @@
+post:
+  tags:
+    - Auth
+  summary: Register a new user
+  operationId: createUser
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ..\..\components\schemas\userSchema.yaml
+  responses:
+    '201':
+      description: User registered successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+    '400':
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Invalid input data'
+    '409':
+      description: Email already in use
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Email already in use'

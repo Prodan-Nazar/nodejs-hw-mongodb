@@ -1,0 +1,8 @@
+type: object
+properties:
+  email:
+    type: string
+    example: 'new.user@example.com'
+  password:
+    type: string
+    example: 'newpassword123'

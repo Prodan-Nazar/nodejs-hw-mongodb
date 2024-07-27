@@ -1,0 +1,43 @@
+post:
+  tags:
+    - Auth
+  summary: Reset user password
+  operationId: resetPwd
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            token:
+              type: string
+              example: 'reset-token...'
+            newPassword:
+              type: string
+              example: 'newpassword123'
+  responses:
+    '200':
+      description: Password reset successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Password has been successfully changed'
+    '401':
+      $ref: ..\..\components\responses\401.yaml
+    '404':
+      description: User not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'User not found'
