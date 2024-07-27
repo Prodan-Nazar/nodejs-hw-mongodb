@@ -1,3 +1,5 @@
+# swagger/components/responses/401.yaml
+
 description: Unauthorized error
 content:
   application/json:

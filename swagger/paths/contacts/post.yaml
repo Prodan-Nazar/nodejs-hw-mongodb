@@ -1,3 +1,5 @@
+#/swagger/paths/students/post.yaml
+
 tags:
   - Contacts
 summary: Create contact
@@ -15,33 +17,37 @@ requestBody:
           - phoneNumber
         properties:
           name:
-            description: 'Contact name'
+            description: "Contact's name"
             type: string
             example: 'John Doe'
           phoneNumber:
-            description: 'Contact phone number'
+            description: "Contact's number"
             type: string
-            example: '+380123456789'
+            example: 0961111111
           email:
-            description: 'Contact email'
+            description: "Contact's email"
             type: string
-            example: 'mymail@my.com'
-          contactType:
-            description: 'Contact type'
-            type: string
-            enum: ['work', 'home', 'personal']
-            example: 'work'
-          isFavorite:
-            description: 'Contact favorite'
+            example: irina@mail.com
+          isFavourite:
+            description: 'Is contact favorite'
             type: boolean
             example: true
+          contactType:
+            description: "Contact's type"
+            type: string
+            enum: ['personal', 'work', 'home']
+          userId:
+            description: "Contact's user id"
+            type: string
+            example: 65e4decdd286b30065d54af9
           photo:
-            description: 'Contact photo'
+            description: "Link to contact's photo"
             type: string
             format: binary
+            example: <https://res.cloudinary.com/uqwgdu/image/upload/image.png>
 responses:
   '201':
-    description: Creates a contact
+    description: 'Creates a contact'
     content:
       application/json:
         schema:
@@ -53,18 +59,12 @@ responses:
           properties:
             status:
               type: integer
-              example: 200
+              example: 201
             message:
               type: string
               example: Successfully created a contact!
             data:
               type: object
               $ref: '../../components/schemas/contact.yaml'
-  '400':
-    $ref: '../../components/responses/400.yaml'
   '401':
     $ref: '../../components/responses/401.yaml'
-  '422':
-    $ref: '../../components/responses/422.yaml'
-  '500':
-    $ref: '../../components/responses/500.yaml'

@@ -1,5 +1,8 @@
+//.gitignore
+
 /node_modules
 
+/Readme
 .env
 
 .vscode

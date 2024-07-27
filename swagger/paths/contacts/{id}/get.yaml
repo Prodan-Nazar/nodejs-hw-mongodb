@@ -1,7 +1,8 @@
+# swagger/paths/studens/{id}/get.yaml
 tags:
   - Contacts
 summary: Get contact by id
-operationId: getContactById
+operationId: getContact
 description: 'Get contact by id'
 security:
   - bearerAuth: []
@@ -33,9 +34,5 @@ responses:
             data:
               type: object
               $ref: '../../../components/schemas/contact.yaml'
-  '401':
-    $ref: '../../../components/responses/401.yaml'
   '404':
     $ref: '../../../components/responses/404.yaml'
-  '500':
-    $ref: '../../../components/responses/500.yaml'
