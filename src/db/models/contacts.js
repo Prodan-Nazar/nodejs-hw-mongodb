@@ -1,7 +1,6 @@
-import { model, Schema } from 'mongoose';
-import { moongooseSaveError, setUpdateSettings } from './hooks.js';
+import mongoose, { Schema } from 'mongoose';
 
-const contactsSchema = new Schema(
+const ContactsSchema = new Schema(
   {
     name: {
       type: String,
@@ -15,23 +14,23 @@ const contactsSchema = new Schema(
       type: String,
       required: false,
     },
-    isFavourite: {
+    isFavorite: {
       type: Boolean,
       default: false,
     },
     contactType: {
       type: String,
-      enam: ['personal', 'work', 'home'],
+      enum: ['work', 'home', 'personal'],
+      required: false,
       default: 'personal',
     },
-    userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
-    photo: { type: String },
+    userId: { type: String, required: true, ref: 'users' },
+    photo: { type: String, required: false },
   },
-  { versionKey: false, timestamps: true },
+  {
+    timestamps: true,
+    versionKey: false,
+  },
 );
 
-contactsSchema.post('save', moongooseSaveError);
-contactsSchema.pre('findOneAndUpdate', setUpdateSettings);
-contactsSchema.post('findOneAndUpdate', moongooseSaveError);
-
-export const Contact = model('contacts', contactsSchema);
+export const ContactsCollection = mongoose.model('contacts', ContactsSchema);

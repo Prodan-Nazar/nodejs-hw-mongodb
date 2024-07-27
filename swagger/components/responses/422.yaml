@@ -1,4 +1,4 @@
-description: Not found error
+description: Unprocessable Entity error
 content:
   application/json:
     schema:
@@ -10,10 +10,10 @@ content:
       properties:
         status:
           type: integer
-          example: 404
+          example: 422
         message:
           type: string
-          example: Not found
+          example: Unprocessable Entity
         data:
           type: object
           required:
@@ -21,4 +21,4 @@ content:
           properties:
             message:
               type: string
-              example: 'Not found'
+              example: 'Validation failed'
