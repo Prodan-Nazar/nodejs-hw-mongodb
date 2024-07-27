@@ -1,4 +1,4 @@
-description: Not found error
+description: Unauthorized error
 content:
   application/json:
     schema:
@@ -13,7 +13,7 @@ content:
           example: 404
         message:
           type: string
-          example: Not found
+          example: Contact not found
         data:
           type: object
           required:
@@ -21,4 +21,4 @@ content:
           properties:
             message:
               type: string
-              example: 'Not found'
+              example: 'Contact not found'

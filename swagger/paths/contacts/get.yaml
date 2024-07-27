@@ -1,59 +1,28 @@
 tags:
   - Contacts
 summary: Get list of contacts
-operationId: getAllContacts
-description: 'Get list of contacts this user has'
+operationId: getContacts
+description: 'Get list of contacts'
 security:
   - bearerAuth: []
 parameters:
   - in: query
     name: page
+    required: true
     schema:
       type: integer
-    example: 1
+      example: 1
   - in: query
     name: perPage
     schema:
       type: integer
       example: 10
   - in: query
-    name: sortBy
-    schema:
-      type: string
-      example: 'name'
-    description: "All contacts's fields can be mentioned. Default value - name"
-  - in: query
     name: sortOrder
     schema:
       type: string
       enum: ['asc', 'desc']
       example: 'asc'
-  - in: query
-    name: name
-    schema:
-      type: string
-      example: 'Joe'
-  - in: query
-    name: phoneNumber
-    schema:
-      type: string
-      example: '+380123456789'
-  - in: query
-    name: email
-    schema:
-      type: string
-      example: 'mymail@my.com'
-  - in: query
-    name: isFavorite
-    schema:
-      type: string
-      example: true
-  - in: query
-    name: contactType
-    schema:
-      type: string
-      enum: ['work', 'home', 'personal']
-      example: 'work'
 responses:
   '200':
     description: Successfully found contacts!
@@ -78,7 +47,7 @@ responses:
                 - data
                 - page
                 - perPage
-                - totalItems
+                - totalContacts
                 - totalPages
                 - hasNextPage
                 - hasPreviousPage
@@ -107,9 +76,3 @@ responses:
                   example: true
   '401':
     $ref: '../../components/responses/401.yaml'
-  '404':
-    $ref: '../../components/responses/404.yaml'
-  '422':
-    $ref: '../../components/responses/422.yaml'
-  '500':
-    $ref: '../../components/responses/500.yaml'

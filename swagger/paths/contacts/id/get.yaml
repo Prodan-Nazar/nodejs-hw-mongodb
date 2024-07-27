@@ -1,10 +1,13 @@
 tags:
   - Contacts
+
 summary: Get contact by id
-operationId: getContactById
-description: 'Get contact by id'
+operationId: getContact
+description: Get contact by id
+
 security:
   - bearerAuth: []
+
 parameters:
   - in: path
     name: id
@@ -12,9 +15,10 @@ parameters:
     schema:
       type: string
       example: '65ca67e7ae7f10c88b598384'
+
 responses:
   '200':
-    description: 'Get contact by id'
+    description: Get contact by id
     content:
       application/json:
         schema:
@@ -33,9 +37,7 @@ responses:
             data:
               type: object
               $ref: '../../../components/schemas/contact.yaml'
-  '401':
-    $ref: '../../../components/responses/401.yaml'
   '404':
     $ref: '../../../components/responses/404.yaml'
-  '500':
-    $ref: '../../../components/responses/500.yaml'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
