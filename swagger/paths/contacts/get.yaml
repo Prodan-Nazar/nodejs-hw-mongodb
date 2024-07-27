@@ -1,10 +1,8 @@
-#/swagger/paths/students/get.yaml
-
 tags:
   - Contacts
 summary: Get list of contacts
-operationId: getContacts
-description: 'Get list of contacts with this endpoint'
+operationId: getAllContacts
+description: 'Get list of contacts this user has'
 security:
   - bearerAuth: []
 parameters:
@@ -23,7 +21,7 @@ parameters:
     schema:
       type: string
       example: 'name'
-    description: "All contact's fields can be mentioned. Default value - _id"
+    description: "All contacts's fields can be mentioned. Default value - name"
   - in: query
     name: sortOrder
     schema:
@@ -31,20 +29,31 @@ parameters:
       enum: ['asc', 'desc']
       example: 'asc'
   - in: query
+    name: name
+    schema:
+      type: string
+      example: 'Joe'
+  - in: query
+    name: phoneNumber
+    schema:
+      type: string
+      example: '+380123456789'
+  - in: query
+    name: email
+    schema:
+      type: string
+      example: 'mymail@my.com'
+  - in: query
+    name: isFavorite
+    schema:
+      type: string
+      example: true
+  - in: query
     name: contactType
     schema:
       type: string
-      enum: ['personal', 'work', 'home']
-  - in: query
-    name: isFavourite
-    schema:
-      type: boolean
-      example: false
-  - in: query
-    name: userId
-    schema:
-      type: string
-      example: 65e4decdd286b30065d54af9
+      enum: ['work', 'home', 'personal']
+      example: 'work'
 responses:
   '200':
     description: Successfully found contacts!
@@ -98,3 +107,9 @@ responses:
                   example: true
   '401':
     $ref: '../../components/responses/401.yaml'
+  '404':
+    $ref: '../../components/responses/404.yaml'
+  '422':
+    $ref: '../../components/responses/422.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'

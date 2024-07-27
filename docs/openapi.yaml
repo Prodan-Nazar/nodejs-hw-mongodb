@@ -1,20 +1,17 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: My contacts
+  title: Contacts App
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  description: Add and save your contacts
+  description: This application manages contacts, providing functionalities for user registration, login, Google OAuth authentication, password reset, and operations on user-specific contacts stored in the database.
 tags:
   - name: Contacts
-    description: Operations about contacts.
-  - name: Auth
-    description: Auth operations.
+    description: Operations related to managing contacts.
 servers:
-  - url: http://localhost:3000
-  - url: https://nodejs-hw-mongodb-okzz.onrender.com
-
+  - url: https://hw2-mongodb-6ic0.onrender.com
+    description: Production server
 paths:
   /contacts:
     get:
@@ -28,9 +25,9 @@ paths:
       $ref: ../swagger/paths/contacts/{id}/patch.yaml
     delete:
       $ref: ../swagger/paths/contacts/{id}/delete.yaml
-
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+      bearerFormat: JWT
